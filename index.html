@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Job Corner</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(90deg, #4f8cff 0%, #4CAF50 100%);
+            --primary-color: #4f8cff;
+            --secondary-color: #f4f4f4;
+            --accent-color: #4CAF50;
+            --text-color: #333;
+            --modal-bg: rgba(0, 0, 0, 0.5);
+            --card-bg: #fff;
+            --border-radius: 12px;
+            --transition: 0.3s;
+            --header-height: 64px;
+            --toast-bg: #333;
+            --toast-color: #fff;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--secondary-color);
+            color: var(--text-color);
+            transition: background var(--transition), color var(--transition);
+        }
+        body.dark-mode {
+            --primary-gradient: linear-gradient(90deg, #232526 0%, #4f8cff 100%);
+            --primary-color: #4f8cff;
+            --secondary-color: #181818;
+            --accent-color: #4CAF50;
+            --text-color: #eee;
+            --card-bg: #232526;
+            --modal-bg: rgba(0,0,0,0.7);
+            --toast-bg: #222;
+            --toast-color: #4f8cff;
+        }
+        header {
+            height: var(--header-height);
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        .nav {
+            display: flex;
+            gap: 16px; /* reduced gap for tighter layout */
+            align-items: center;
+            height: var(--header-height);
+        }
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            transition: background var(--transition);
+        }
+        .nav a:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        .header-title {
+            color: #fff;
+            font-size: 1.7rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .dark-toggle {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            margin-left: 12px;
+            transition: color var(--transition);
+        }
+        .dark-toggle:hover {
+            color: var(--accent-color);
+        }
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 16px 16px 16px;
+        }
+        .main-heading {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .sub-heading {
+            text-align: center;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+        }
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+        .filters input[type="text"], .filters select {
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            min-width: 180px;
+        }
+        .button {
+            display: inline-block;
+            margin: 0 auto 32px auto;
+            padding: 12px 32px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.12);
+            transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+        }
+        .button:hover, .button:focus {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 16px rgba(79,140,255,0.18);
+            background: linear-gradient(90deg, #4CAF50 0%, #4f8cff 100%);
+        }
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .job-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px 18px 18px 18px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            transition: box-shadow var(--transition), transform var(--transition), background var(--transition);
+            position: relative;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95);}
+            to { opacity: 1; transform: scale(1);}
+        }
+        .job-card:hover {
+            box-shadow: 0 6px 24px rgba(79,140,255,0.18);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .job-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        .job-card p {
+            margin: 4px 0;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        .job-card .button {
+            margin: 12px 0 0 0;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .job-type {
+            display: inline-block;
+            background: var(--accent-color);
+            color: #fff;
+            font-size: 0.85rem;
+            padding: 2px 10px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--modal-bg);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 32px 24px 24px 24px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 8px 32px rgba(79,140,255,0.18);
+            position: relative;
+            animation: modalFadeIn 0.3s;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95);}
+            to { opacity: 1; transform: scale(1);}
+        }
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 18px;
+            right: 22px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color var(--transition);
+        }
+        .close:hover,
+        .close:focus {
+            color: var(--primary-color);
+        }
+        .modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 18px;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+        .modal-content input[type="text"],
+        .modal-content input[type="file"],
+        .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 14px 0;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border var(--transition);
+        }
+        .modal-content input[type="text"]:focus,
+        .modal-content select:focus {
+            border: 1.5px solid var(--primary-color);
+            outline: none;
+        }
+        .success-message {
+            color: var(--accent-color);
+            font-weight: 600;
+            text-align: center;
+            margin-top: 12px;
+            font-size: 1.1rem;
+        }
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--toast-bg);
+            color: var(--toast-color);
+            padding: 14px 32px;
+            border-radius: 24px;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s;
+        }
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                height: auto;
+                padding: 16px;
+            }
+            .header-title {
+                margin-bottom: 2px;
+                font-size: 1.2rem;
+            }
+            main {
+                padding: 12px 4px;
+            }
+            .modal-content {
+                padding: 24px 8px 16px 8px;
+            }
+            .filters {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        /* Update the .nav style for better alignment of the language button */
+        .nav {
+            display: flex;
+            gap: 16px; /* reduced gap for tighter layout */
+            align-items: center;
+            height: var(--header-height);
+        }
+
+        #langToggle {
+            padding: 8px 18px;
+            font-size: 1rem;
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.12);
+            transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+            display: flex;
+            align-items: center;
+            height: 40px;
+        }
+
+        #langToggle:hover, #langToggle:focus {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 16px rgba(79,140,255,0.18);
+            background: linear-gradient(90deg, #4CAF50 0%, #4f8cff 100%);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">The Job Corner</div>
+        <nav class="nav">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <button class="button" id="postJobBtn" style="margin:0;">Post a Job</button>
+            <button class="dark-toggle" id="darkToggle" title="Toggle dark mode">🌙</button>
+            <button class="button" id="langToggle">हिन्दी</button>
+        </nav>
+    </header>
+    <main>
+        <div class="main-heading" id="mainHeading">The Job Corner</div>
+        <div class="sub-heading" id="subHeading">Find your next opportunity or post a job for free!</div>
+        <div class="filters">
+            <input type="text" id="searchBar" placeholder="Search jobs...">
+            <select id="jobTypeFilter">
+                <option value="">All Types</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Internship">Internship</option>
+            </select>
+        </div>
+        <div class="job-grid" id="jobList"></div>
+    </main>
+
+    <!-- Post a Job Modal -->
+    <div id="postJobModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closePostJobModal">&times;</span>
+            <h2>Post a Job</h2>
+            <select id="jobType" required>
+                <option value="">Select Job Type</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Internship">Internship</option>
+            </select>
+            <input type="text" id="businessName" placeholder="Business Name" required>
+            <input type="text" id="city" placeholder="City" required>
+            <input type="text" id="jobProfile" placeholder="Job Profile" required>
+            <input type="text" id="estimatedPay" placeholder="Estimated Pay" required>
+            <input type="text" id="contactInfo" placeholder="Contact Info" required>
+            <button class="button" id="submitJobBtn">Submit</button>
+        </div>
+    </div>
+
+    <!-- Apply Modal -->
+    <div id="applyJobModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeApplyJobModal">&times;</span>
+            <h2 id="applyModalTitle">Apply for Job</h2>
+            <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
+            <input type="text" id="applicantContact" placeholder="Your Contact Info" required>
+            <button class="button" id="submitApplicationBtn">Submit Application</button>
+            <div class="success-message" id="successMsg" style="display:none;">Application submitted successfully!</div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <div id="newsSlider" style="position:fixed;bottom:0;left:0;width:100%;background:var(--primary-gradient);color:#fff;font-weight:600;font-size:1.05rem;letter-spacing:1px;padding:10px 0;z-index:999;overflow:hidden;box-shadow:0 -2px 12px rgba(79,140,255,0.12);">
+        <span id="newsText" style="display:inline-block;white-space:nowrap;padding-left:32px;"></span>
+    </div>
+
+    <script>
+        // Modal elements
+        const postJobModal = document.getElementById('postJobModal');
+        const applyJobModal = document.getElementById('applyJobModal');
+        const jobList = document.getElementById('jobList');
+        const postJobBtn = document.getElementById('postJobBtn');
+        const closePostJobModal = document.getElementById('closePostJobModal');
+        const closeApplyJobModal = document.getElementById('closeApplyJobModal');
+        const submitJobBtn = document.getElementById('submitJobBtn');
+        const submitApplicationBtn = document.getElementById('submitApplicationBtn');
+        const successMsg = document.getElementById('successMsg');
+        const applyModalTitle = document.getElementById('applyModalTitle');
+        const toast = document.getElementById('toast');
+        const darkToggle = document.getElementById('darkToggle');
+        const searchBar = document.getElementById('searchBar');
+        const jobTypeFilter = document.getElementById('jobTypeFilter');
+        const jobTypeSelect = document.getElementById('jobType');
+        const langToggle = document.getElementById('langToggle');
+
+        let currentJobTitle = "";
+        let jobs = [];
+        let currentLang = localStorage.getItem('tjc_lang') || 'en';
+
+        // Hindi translations
+        const translations = {
+            "mainHeading": {
+                "en": "The Job Corner",
+                "hi": "द जॉब कॉर्नर"
+            },
+            "subHeading": {
+                "en": "Find your next opportunity or post a job for free!",
+                "hi": "अपना अगला अवसर खोजें या मुफ्त में नौकरी पोस्ट करें!"
+            },
+            "postJobBtn": {
+                "en": "Post a Job",
+                "hi": "नौकरी पोस्ट करें"
+            },
+            "searchBar": {
+                "en": "Search jobs...",
+                "hi": "नौकरियों की खोज करें..."
+            },
+            "jobTypeFilter": {
+                "en": ["All Types", "Full-time", "Part-time", "Internship"],
+                "hi": ["सभी प्रकार", "पूर्णकालिक", "अंशकालिक", "इंटर्नशिप"]
+            },
+            "submitJobBtn": {
+                "en": "Submit",
+                "hi": "जमा करें"
+            },
+            "applyModalTitle": {
+                "en": "Apply for Job",
+                "hi": "नौकरी के लिए आवेदन करें"
+            },
+            "submitApplicationBtn": {
+                "en": "Submit Application",
+                "hi": "आवेदन जमा करें"
+            },
+            "successMsg": {
+                "en": "Application submitted successfully!",
+                "hi": "आवेदन सफलतापूर्वक जमा हुआ!"
+            }
+        };
+
+        // Load jobs from localStorage
+        function loadJobs() {
+            const saved = localStorage.getItem('tjc_jobs');
+            jobs = saved ? JSON.parse(saved) : [];
+        }
+
+        // Save jobs to localStorage
+        function saveJobs() {
+            localStorage.setItem('tjc_jobs', JSON.stringify(jobs));
+        }
+
+        // Show toast notification
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 1800);
+        }
+
+        // Render jobs with filters
+        function renderJobs() {
+            jobList.innerHTML = '';
+            let filtered = jobs.filter(job => {
+                const search = searchBar.value.trim().toLowerCase();
+                const type = jobTypeFilter.value;
+                let match = true;
+                if (search) {
+                    match = (
+                        job.businessName.toLowerCase().includes(search) ||
+                        job.city.toLowerCase().includes(search) ||
+                        job.jobProfile.toLowerCase().includes(search)
+                    );
+                }
+                if (type) {
+                    match = match && job.jobType === type;
+                }
+                return match;
+            });
+            filtered.forEach((job, idx) => {
+                const jobCard = document.createElement('div');
+                jobCard.className = 'job-card';
+                jobCard.innerHTML = `
+                    <span class="job-type">${job.jobType}</span>
+                    <h3>${job.businessName}</h3>
+                    <p><strong>City:</strong> ${job.city}</p>
+                    <p><strong>Job Profile:</strong> ${job.jobProfile}</p>
+                    <p><strong>Estimated Pay:</strong> ${job.estimatedPay}</p>
+                    <p><strong>Contact:</strong> ${job.contactInfo}</p>
+                    <button class="button applyBtn">Apply</button>
+                `;
+                jobCard.querySelector('.applyBtn').onclick = function() {
+                    applyJobModal.style.display = "flex";
+                    currentJobTitle = `${job.jobProfile} at ${job.businessName}`;
+                    applyModalTitle.textContent = `Apply for ${currentJobTitle}`;
+                }
+                jobList.appendChild(jobCard);
+            });
+        }
+
+        // Open Post Job Modal
+        postJobBtn.onclick = function() {
+            postJobModal.style.display = "flex";
+        }
+
+        // Close Post Job Modal
+        closePostJobModal.onclick = function() {
+            postJobModal.style.display = "none";
+        }
+
+        // Close Apply Modal
+        closeApplyJobModal.onclick = function() {
+            applyJobModal.style.display = "none";
+            successMsg.style.display = "none";
+            document.getElementById('resume').value = '';
+            document.getElementById('applicantContact').value = '';
+        }
+
+        // Submit Job
+        submitJobBtn.onclick = function() {
+            const jobType = jobTypeSelect.value;
+            const businessName = document.getElementById('businessName').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const jobProfile = document.getElementById('jobProfile').value.trim();
+            const estimatedPay = document.getElementById('estimatedPay').value.trim();
+            const contactInfo = document.getElementById('contactInfo').value.trim();
+
+            if (!jobType || !businessName || !city || !jobProfile || !estimatedPay || !contactInfo) {
+                showToast("Please fill all fields.");
+                return;
+            }
+
+            const job = { jobType, businessName, city, jobProfile, estimatedPay, contactInfo };
+            jobs.unshift(job);
+            saveJobs();
+            renderJobs();
+            showToast("Job posted successfully!");
+
+            postJobModal.style.display = "none";
+            jobTypeSelect.value = '';
+            document.getElementById('businessName').value = '';
+            document.getElementById('city').value = '';
+            document.getElementById('jobProfile').value = '';
+            document.getElementById('estimatedPay').value = '';
+            document.getElementById('contactInfo').value = '';
+        }
+
+        // Submit Application
+        submitApplicationBtn.onclick = function() {
+            const resume = document.getElementById('resume').files[0];
+            const applicantContact = document.getElementById('applicantContact').value.trim();
+
+            if (!resume || !applicantContact) {
+                showToast("Please upload your resume and provide contact info.");
+                return;
+            }
+
+            successMsg.style.display = "block";
+            showToast("Application submitted!");
+            setTimeout(() => {
+                applyJobModal.style.display = "none";
+                successMsg.style.display = "none";
+                document.getElementById('resume').value = '';
+                document.getElementById('applicantContact').value = '';
+            }, 1500);
+        }
+
+        // Modal close on outside click
+        window.onclick = function(event) {
+            if (event.target === postJobModal) {
+                postJobModal.style.display = "none";
+            }
+            if (event.target === applyJobModal) {
+                applyJobModal.style.display = "none";
+                successMsg.style.display = "none";
+                document.getElementById('resume').value = '';
+                document.getElementById('applicantContact').value = '';
+            }
+        }
+
+        // Dark mode toggle
+        darkToggle.onclick = function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('tjc_dark', document.body.classList.contains('dark-mode') ? '1' : '0');
+        }
+        // Load dark mode preference
+        if (localStorage.getItem('tjc_dark') === '1') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Language toggle logic
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('tjc_lang', lang);
+
+            document.getElementById('mainHeading').textContent = translations.mainHeading[lang];
+            document.getElementById('subHeading').textContent = translations.subHeading[lang];
+            document.getElementById('postJobBtn').textContent = translations.postJobBtn[lang];
+            document.getElementById('searchBar').placeholder = translations.searchBar[lang];
+
+            // Update job type filter options
+            const jobTypeFilter = document.getElementById('jobTypeFilter');
+            const jobTypeSelect = document.getElementById('jobType');
+            [jobTypeFilter, jobTypeSelect].forEach(select => {
+                if (select) {
+                    const opts = translations.jobTypeFilter[lang];
+                    Array.from(select.options).forEach((opt, i) => {
+                        opt.textContent = opts[i];
+                    });
+                }
+            });
+
+            document.getElementById('submitJobBtn').textContent = translations.submitJobBtn[lang];
+            document.getElementById('applyModalTitle').textContent = translations.applyModalTitle[lang];
+            document.getElementById('submitApplicationBtn').textContent = translations.submitApplicationBtn[lang];
+            document.getElementById('successMsg').textContent = translations.successMsg[lang];
+
+            langToggle.textContent = lang === 'en' ? 'हिन्दी' : 'English';
+        }
+
+        langToggle.onclick = function() {
+            setLanguage(currentLang === 'en' ? 'hi' : 'en');
+        };
+
+        // On page load, set language
+        setLanguage(currentLang);
+
+        // Filters
+        searchBar.oninput = renderJobs;
+        jobTypeFilter.onchange = renderJobs;
+
+        // Initial load
+        loadJobs();
+        renderJobs();
+
+        // Latest job news slider
+        const newsSlider = document.getElementById('newsSlider');
+        const newsText = document.getElementById('newsText');
+        const jobNews = [
+            "🔔 New: 5,000+ jobs posted in Bangalore this week!",
+            "💼 Hiring: Retail stores in Mumbai looking for part-time staff.",
+            "🚀 Internship alert: Tech startups in Delhi are hiring freshers.",
+            "🎯 MSMEs in Jaipur offering flexible work hours.",
+            "🌟 Top job: Accountant needed in Kolkata, apply now!",
+            "📰 Latest: Hospitality jobs booming in Goa for the season.",
+            "📢 Employers: Post your job for free on The Job Corner!"
+        ];
+        let newsIdx = 0;
+
+        function showNextNews() {
+            newsText.textContent = jobNews[newsIdx];
+            newsText.style.opacity = 0;
+            newsText.style.transform = "translateX(100px)";
+            setTimeout(() => {
+                newsText.style.opacity = 1;
+                newsText.style.transform = "translateX(0)";
+            }, 100);
+            newsIdx = (newsIdx + 1) % jobNews.length;
+        }
+
+        showNextNews();
+        setInterval(showNextNews, 3500);
+    </script>
+</body>
+</html>

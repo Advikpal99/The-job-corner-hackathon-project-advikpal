@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | The Job Corner</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(90deg, #4f8cff 0%, #4CAF50 100%);
+            --primary-color: #4f8cff;
+            --accent-color: #4CAF50;
+            --text-color: #222;
+            --card-bg: #fff;
+            --border-radius: 16px;
+            --transition: 0.3s;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 700px;
+            margin: 48px auto;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 24px rgba(79,140,255,0.12);
+            padding: 40px 32px;
+            text-align: center;
+            animation: fadeIn 0.7s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        h1 {
+            font-size: 2.7rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+        h2 {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        .about-text {
+            color: var(--text-color);
+            font-size: 1.18rem;
+            font-weight: 500;
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+        .author {
+            font-size: 1.05rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .motto {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-top: 18px;
+            letter-spacing: 1px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 32px;
+            padding: 12px 32px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.12);
+            transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+            text-decoration: none;
+        }
+        .back-btn:hover, .back-btn:focus {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 16px rgba(79,140,255,0.18);
+            background: linear-gradient(90deg, #4CAF50 0%, #4f8cff 100%);
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px 8px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>About Us</h1>
+        <h2>The Job Corner (TJC)</h2>
+        <div class="about-text">
+            Welcome to <b>The Job Corner (TJC)</b> – a simple, free, and powerful platform created to help small MSMEs connect with job seekers quickly and easily.<br><br>
+            Our mission is to make hiring for small-scale jobs effortless, without the cost and complexity of big recruitment portals.<br><br>
+            Whether you’re a small shop owner looking for part-time help or a skilled professional searching for opportunities in your city, TJC bridges the gap — all at zero cost.<br><br>
+            This project was proudly built by <span class="author">Advik Pal</span>, an <b>IIM Bangalore BBA DBE student</b>, during a hackathon. The idea was simple: create something useful, accessible, and impactful for our local communities.
+        </div>
+        <div class="motto">
+            “Empowering small businesses, one job at a time.”
+        </div>
+        <a href="index.html" class="back-btn">← Back to Home</a>
+    </div>
